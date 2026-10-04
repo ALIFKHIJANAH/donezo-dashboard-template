@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donezo Dashboard</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Custom Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              900: '#0f3d2e', // Custom deep green background
+              800: '#165e41', // Custom green for primary elements
+              50: '#ecfdf5'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles for the striped chart bar -->
+  <style>
+    .striped-bar {
+      background: repeating-linear-gradient(
+        45deg,
+        #e5e7eb,
+        #e5e7eb 4px,
+        #ffffff 4px,
+        #ffffff 8px
+      );
+    }
+  </style>
+</head>
+<body class="bg-gray-50 flex min-h-screen text-gray-800 font-sans">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-screen fixed left-0 top-0 overflow-y-auto z-10">
+    
+    <!-- Logo -->
+    <div class="flex items-center gap-2 p-6 mb-2">
+      <div class="w-8 h-8 rounded-full bg-emerald-800 flex items-center justify-center text-white">
+        <i data-lucide="check-square" class="w-5 h-5"></i>
+      </div>
+      <span class="text-xl font-bold text-gray-800 tracking-tight">Donezo</span>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="px-4 mb-6">
+      <p class="text-xs font-semibold text-gray-400 mb-4 px-2 tracking-wider">MENU</p>
+      <nav class="space-y-1">
+        <!-- Active Item -->
+        <a href="#" class="flex items-center justify-between px-2 py-2.5 rounded-lg bg-emerald-50 text-emerald-800 font-medium border-r-2 border-emerald-800 transition-colors">
+          <div class="flex items-center gap-3">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span class="text-sm">Dashboard</span>
+          </div>
+        </a>
+        <a href="#" class="flex items-center justify-between px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <div class="flex items-center gap-3">
+            <i data-lucide="check-square" class="w-5 h-5"></i>
+            <span class="text-sm">Tasks</span>
+          </div>
+          <span class="bg-emerald-800 text-white text-[10px] px-2 py-0.5 rounded-full">14+</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <i data-lucide="calendar" class="w-5 h-5"></i>
+          <span class="text-sm">Calendar</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+          <span class="text-sm">Analytics</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <i data-lucide="users" class="w-5 h-5"></i>
+          <span class="text-sm">Team</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- General Section -->
+    <div class="px-4 flex-1">
+      <p class="text-xs font-semibold text-gray-400 mb-4 px-2 tracking-wider">GENERAL</p>
+      <nav class="space-y-1">
+        <a href="#" class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+          <span class="text-sm">Settings</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <i data-lucide="help-circle" class="w-5 h-5"></i>
+          <span class="text-sm">Help</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+          <i data-lucide="log-out" class="w-5 h-5"></i>
+          <span class="text-sm">Logout</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Promo Card -->
+    <div class="p-4 mt-auto">
+      <div class="bg-emerald-900 rounded-2xl p-4 text-white relative overflow-hidden shadow-lg">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-800 rounded-full blur-2xl opacity-50 -mr-10 -mt-10 pointer-events-none"></div>
+        <div class="relative z-10">
+          <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+          </div>
+          <h4 class="font-semibold text-sm mb-1">Download our Mobile App</h4>
+          <p class="text-xs text-emerald-200 mb-4">Get easy in another way</p>
+          <button class="w-full bg-white text-emerald-900 text-xs font-semibold py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            Download
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 ml-64 p-8 min-w-0">
+    
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-8">
+      <!-- Search -->
+      <div class="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-2.5 w-96 shadow-sm">
+        <i data-lucide="search" class="w-4 h-4 text-gray-400 mr-2"></i>
+        <input type="text" placeholder="Search task" class="bg-transparent border-none outline-none text-sm w-full text-gray-700 placeholder-gray-400">
+        <span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 font-mono">⌘ F</span>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-4">
+        <button class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+        </button>
+        <button class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+        </button>
+        
+        <!-- Profile -->
+        <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+          <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm">
+          <div class="hidden md:block">
+            <p class="text-sm font-semibold text-gray-800 leading-tight">Totok Michael</p>
+            <p class="text-xs text-gray-500">tmichael20@mail.com</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Title -->
+    <div class="flex justify-between items-end mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-1">Dashboard</h1>
+        <p class="text-gray-500 text-sm">Plan, prioritize, and accomplish your tasks with ease.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="bg-emerald-800 text-white px-5 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-emerald-900 transition-colors shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          Add Project
+        </button>
+        <button class="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
+          Import Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      
+      <!-- Card 1 (Dark) -->
+      <div class="p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between bg-emerald-800 text-white">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-sm font-medium text-emerald-100">Total Projects</h3>
+          <button class="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-700 text-white hover:bg-emerald-600 transition-colors">
+            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div>
+          <p class="text-4xl font-bold mb-2">24</p>
+          <p class="text-xs flex items-center gap-1 text-emerald-200">
+            <i data-lucide="trending-up" class="w-3 h-3"></i> Increased from last month
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between bg-white text-gray-800">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-sm font-medium text-gray-500">Ended Projects</h3>
+          <button class="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div>
+          <p class="text-4xl font-bold mb-2">10</p>
+          <p class="text-xs flex items-center gap-1 text-gray-500">
+            <i data-lucide="trending-up" class="w-3 h-3 text-emerald-500"></i> Increased from last month
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between bg-white text-gray-800">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-sm font-medium text-gray-500">Running Projects</h3>
+          <button class="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div>
+          <p class="text-4xl font-bold mb-2">12</p>
+          <p class="text-xs flex items-center gap-1 text-gray-500">
+            <i data-lucide="trending-up" class="w-3 h-3 text-emerald-500"></i> Increased from last month
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between bg-white text-gray-800">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-sm font-medium text-gray-500">Pending Project</h3>
+          <button class="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div>
+          <p class="text-4xl font-bold mb-2">2</p>
+          <p class="text-xs text-gray-500">On Discuss</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      
+      <!-- Project Analytics -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800 mb-6">Project Analytics</h3>
+        <div class="flex items-end justify-between h-40">
+          <!-- Sun -->
+          <div class="flex flex-col items-center gap-2 group">
+            <div class="w-8 h-16 rounded-full striped-bar border border-gray-200 transition-all group-hover:opacity-80 relative"></div>
+            <span class="text-xs text-gray-400 font-medium">S</span>
+          </div>
+          <!-- Mon -->
+          <div class="flex flex-col items-center gap-2 group">
+            <div class="w-8 h-24 rounded-full bg-emerald-500 transition-all group-hover:opacity-80"></div>
+            <span class="text-xs text-gray-400 font-medium">M</span>
+          </div>
+          <!-- Tue -->
+          <div class="flex flex-col items-center gap-2 group relative">
+            <div class="absolute -top-8 bg-white border border-gray-200 text-gray-700 text-[10px] py-1 px-2 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-10">74%</div>
+            <div class="w-8 h-32 rounded-full bg-emerald-500 transition-all group-hover:opacity-80"></div>
+            <span class="text-xs text-gray-400 font-medium">T</span>
+          </div>
+          <!-- Wed -->
+          <div class="flex flex-col items-center gap-2 group">
+            <div class="w-8 h-28 rounded-full bg-emerald-800 transition-all group-hover:opacity-80"></div>
+            <span class="text-xs text-gray-400 font-medium">W</span>
+          </div>
+          <!-- Thu -->
+          <div class="flex flex-col items-center gap-2 group">
+            <div class="w-8 h-20 rounded-full striped-bar border border-gray-200 transition-all group-hover:opacity-80"></div>
+            <span class="text-xs text-gray-400 font-medium">T</span>
+          </div>
+          <!-- Fri -->
+          <div class="flex flex-col items-center gap-2 group">
+            <div class="w-8 h-16 rounded-full striped-bar border border-gray-200 transition-all group-hover:opacity-80"></div>
+            <span class="text-xs text-gray-400 font-medium">F</span>
+          </div>
+          <!-- Sat -->
+          <div class="flex flex-col items-center gap-2 group">
+            <div class="w-8 h-12 rounded-full striped-bar border border-gray-200 transition-all group-hover:opacity-80"></div>
+            <span class="text-xs text-gray-400 font-medium">S</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reminders -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between h-full">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Reminders</h3>
+          <h4 class="text-lg font-semibold text-gray-800">Meeting with Arc Company</h4>
+          <p class="text-sm text-gray-500 mt-1">Time : 02.00 pm - 04.00 pm</p>
+        </div>
+        <button class="mt-6 w-full bg-emerald-800 text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-900 transition-colors font-medium text-sm">
+          <i data-lucide="play" class="w-4 h-4 fill-white"></i>
+          Start Meeting
+        </button>
+      </div>
+
+      <!-- Project List -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-semibold text-gray-800">Project</h3>
+          <button class="text-xs font-medium border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 flex items-center gap-1 transition-colors">
+            <i data-lucide="plus" class="w-3 h-3"></i> New
+          </button>
+        </div>
+        <div class="space-y-5">
+          <!-- Item 1 -->
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded flex items-center justify-center text-white bg-blue-500 mt-0.5 shrink-0">
+              <i data-lucide="code" class="w-3 h-3"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Develop API Endpoints</p>
+              <p class="text-xs text-gray-500 mt-0.5">Due date: Nov 26, 2024</p>
+            </div>
+          </div>
+          <!-- Item 2 -->
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded flex items-center justify-center text-white bg-teal-500 mt-0.5 shrink-0">
+              <i data-lucide="users" class="w-3 h-3"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Onboarding Flow</p>
+              <p class="text-xs text-gray-500 mt-0.5">Due date: Nov 28, 2024</p>
+            </div>
+          </div>
+          <!-- Item 3 -->
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded flex items-center justify-center text-white bg-green-500 mt-0.5 shrink-0">
+              <i data-lucide="layout" class="w-3 h-3"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Build Dashboard</p>
+              <p class="text-xs text-gray-500 mt-0.5">Due date: Nov 30, 2024</p>
+            </div>
+          </div>
+          <!-- Item 4 -->
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded flex items-center justify-center text-white bg-yellow-500 mt-0.5 shrink-0">
+              <i data-lucide="zap" class="w-3 h-3"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Optimize Page Load</p>
+              <p class="text-xs text-gray-500 mt-0.5">Due date: Dec 5, 2024</p>
+            </div>
+          </div>
+          <!-- Item 5 -->
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded flex items-center justify-center text-white bg-purple-500 mt-0.5 shrink-0">
+              <i data-lucide="globe" class="w-3 h-3"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">Cross-Browser Testing</p>
+              <p class="text-xs text-gray-500 mt-0.5">Due date: Dec 6, 2024</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Team Collaboration -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-semibold text-gray-800">Team Collaboration</h3>
+          <button class="text-xs font-medium border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 flex items-center gap-1 transition-colors">
+            <i data-lucide="plus" class="w-3 h-3"></i> Add Member
+          </button>
+        </div>
+        <div class="space-y-5">
+          <!-- Member 1 -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <img src="https://i.pravatar.cc/150?img=47" alt="Alexandra" class="w-10 h-10 rounded-full object-cover">
+              <div>
+                <p class="text-sm font-semibold text-gray-800">Alexandra Deff</p>
+                <p class="text-xs text-gray-500 mt-0.5">Working on Github Project Repository</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-medium px-2.5 py-1 rounded-full border bg-emerald-50 text-emerald-600 border-emerald-100 whitespace-nowrap">Completed</span>
+          </div>
+          <!-- Member 2 -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <img src="https://i.pravatar.cc/150?img=11" alt="Edwin" class="w-10 h-10 rounded-full object-cover">
+              <div>
+                <p class="text-sm font-semibold text-gray-800">Edwin Adenike</p>
+                <p class="text-xs text-gray-500 mt-0.5">Working on Integrate User Auth System</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-medium px-2.5 py-1 rounded-full border bg-yellow-50 text-yellow-600 border-yellow-100 whitespace-nowrap">In Progress</span>
+          </div>
+          <!-- Member 3 -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <img src="https://i.pravatar.cc/150?img=59" alt="Isaac" class="w-10 h-10 rounded-full object-cover">
+              <div>
+                <p class="text-sm font-semibold text-gray-800">Isaac Oluwatemilorun</p>
+                <p class="text-xs text-gray-500 mt-0.5">Working on Develop Search Functionality</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-medium px-2.5 py-1 rounded-full border bg-red-50 text-red-600 border-red-100 whitespace-nowrap">Pending</span>
+          </div>
+          <!-- Member 4 -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <img src="https://i.pravatar.cc/150?img=12" alt="David" class="w-10 h-10 rounded-full object-cover">
+              <div>
+                <p class="text-sm font-semibold text-gray-800">David Oshodi</p>
+                <p class="text-xs text-gray-500 mt-0.5">Working on Responsive Layout for Homepage</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-medium px-2.5 py-1 rounded-full border bg-yellow-50 text-yellow-600 border-yellow-100 whitespace-nowrap">In Progress</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Progress -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center relative">
+        <h3 class="text-lg font-semibold text-gray-800 self-start mb-6">Project Progress</h3>
+        
+        <!-- Donut Chart SVG -->
+        <div class="relative w-48 h-48 flex items-center justify-center">
+          <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+            <!-- Background Track -->
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#e5e7eb" stroke-width="15" />
+            <!-- Progress Arc (41%) -->
+            <!-- Circumference = 2 * PI * 40 = 251.3 -->
+            <!-- 41% of 251.3 = 103.03. Dashoffset = 251.3 - 103.03 = 148.27 -->
+            <circle 
+              cx="50" cy="50" r="40" fill="transparent" 
+              stroke="#165e41" stroke-width="15" 
+              stroke-dasharray="251.2" stroke-dashoffset="148.2" 
+              stroke-linecap="round"
+            />
+          </svg>
+          <div class="absolute flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold text-gray-800">41%</span>
+            <span class="text-xs text-gray-500">Project Ended</span>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex items-center gap-6 mt-8 text-xs font-medium text-gray-600 w-full justify-center">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-emerald-500"></div> Completed
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-emerald-800"></div> In Progress
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-gray-200 border border-gray-300"></div> Pending
+          </div>
+        </div>
+      </div>
+
+      <!-- Time Tracker -->
+      <div class="bg-emerald-950 p-6 rounded-2xl shadow-sm border border-emerald-900 relative overflow-hidden flex flex-col justify-between min-h-[250px]">
+        <!-- Decorative background waves -->
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+          <div class="absolute -left-10 -top-10 w-40 h-40 border-[20px] border-emerald-500 rounded-full"></div>
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 border-[20px] border-emerald-500 rounded-full"></div>
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-[10px] border-emerald-400 rounded-full"></div>
+        </div>
+        
+        <div class="relative z-10 flex justify-between items-start">
+          <h3 class="text-lg font-semibold text-white">Time Tracker</h3>
+          <button class="text-emerald-300 hover:text-white transition-colors">
+            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="relative z-10 text-center my-4">
+          <span class="text-4xl font-bold text-white tracking-widest">01:24:08</span>
+        </div>
+
+        <div class="relative z-10 flex items-center justify-center gap-4">
+          <button class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-emerald-900 hover:bg-gray-100 transition-colors shadow-lg">
+            <i data-lucide="play" class="w-5 h-5 fill-emerald-900 ml-1"></i>
+          </button>
+          <button class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-colors shadow-lg">
+            <i data-lucide="square" class="w-4 h-4 fill-white"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
