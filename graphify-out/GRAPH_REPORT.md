@@ -1,16 +1,16 @@
 # Graph Report - Dashboard-Template  (2026-10-04)
 
 ## Corpus Check
-- 13 files · ~4,361 words
+- 18 files · ~10,323 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 23 nodes · 11 edges · 1 communities detected
-- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
+- 32 nodes · 15 edges · 1 communities detected
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 0|Community 0]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `submit()` - 2 edges
@@ -22,16 +22,13 @@
 
 ## Communities
 
-### Community 1 - "Community 1"
-Cohesion: 0.67
+### Community 0 - "Community 0"
+Cohesion: 0.33
 Nodes (2): login(), submit()
 
 ## Knowledge Gaps
-- **Thin community `Community 1`** (3 nodes): `login()`, `submit()`, `AuthPage.tsx`
+- **Thin community `Community 0`** (6 nodes): `getUser()`, `login()`, `logout()`, `submit()`, `AuthPage.tsx`, `auth.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
-_Questions this graph is uniquely positioned to answer:_
-
-- **Why does `login()` connect `Community 1` to `Community 3`?**
-  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+_Not enough signal to generate questions. This usually means the corpus has no AMBIGUOUS edges, no bridge nodes, no INFERRED relationships, and all communities are tightly cohesive. Add more files or run with --mode deep to extract richer edges._

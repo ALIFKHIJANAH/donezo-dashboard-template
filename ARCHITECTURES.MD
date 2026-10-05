@@ -30,9 +30,14 @@ Installed versions at inspection, not permanent version constraints:
 index.html                    HTML shell, #root, early theme script
 src/
   main.tsx                    React mount and global CSS import
-  App.tsx                     Path selection, Dashboard, StatCard, fixtures
+   App.tsx                     Path selection, Dashboard state, fixtures
+  dashboard.css               Reference dashboard layout and light/dark tokens
   AuthPage.tsx                Login/registration forms and feedback
-  components/ui.tsx           Custom shared UI wrappers
+   components/ui.tsx           Auth UI wrappers
+   components/DashboardButton.tsx   Dashboard variants and async states
+   components/DashboardSidebar.tsx  Configurable navigation groups
+   components/StatCard.tsx          Statistic presentation and detail action
+   components/DashboardChart.tsx    Configurable bar and semicircular charts
   lib/auth.ts                 Demo localStorage marker
   lib/theme.ts                Theme preference and root class
   lib/utils.ts                cn string concatenation
@@ -103,7 +108,9 @@ Keep both initialization paths aligned. There is no live subscription to OS them
 
 ## Styling and component boundaries
 
-The present design uses Tailwind palette utilities directly, including emerald accents and explicit light/dark surface classes. `src/index.css` owns global focus styling, reduced-motion handling, and custom chart patterns. Inter is named in the font stack, but no bundled font asset or font import supplies it.
+The dashboard uses scoped semantic light/dark variables and responsive layout rules in `src/dashboard.css`. Native sections, buttons, and dialogs avoid conflicting shared-wrapper background utilities. Authentication retains the Tailwind-based shared wrappers. `src/index.css` owns global focus styling and reduced-motion handling. Inter is named in the font stack, but no bundled font asset or font import supplies it. The reference image drives the forest-green palette, compact typography, unequal panel widths, capsule bars, and semicircular gauge; CSS texture links the timer and mobile promotion visually.
+
+Dashboard presentation components live in `src/components/`; `Dashboard` retains navigation, dialog, meeting, import, search, timer, and theme behavior. The same sidebar configuration renders inside the desktop aside and mobile dialog. Chart data, labels, colors, and legend entries are props rather than index-specific styles. Gauge SVG pattern IDs are unique per mounted chart. See `SYSTEM.MD` for the customization contracts and examples.
 
 Tailwind 4 is loaded through PostCSS and `@import "tailwindcss"`. The JavaScript `tailwind.config.js` has no matching `@config` directive, so its theme overrides/content settings are not activated by that stylesheet. New configuration should use CSS-first `@theme`, or deliberately load the legacy file. Autoprefixer is present even though Tailwind 4 handles vendor prefixing itself.
 
@@ -111,13 +118,13 @@ The shared wrappers are project-owned shadcn-style components. They are not gene
 
 ## Current interaction boundaries
 
-- Navigation changes a selected label and feedback; it does not load distinct task, calendar, analytics, or team pages.
+- Navigation selects and scrolls to existing dashboard panels; it does not load distinct feature pages.
 - Project/member forms close with feedback; they do not mutate the fixture arrays or persist records.
 - Import reports simulated completion; no file parsing, upload, or API request occurs.
-- Download feedback claims a copied link, but no clipboard write occurs.
+- Download feedback explicitly reports that the mobile app is a demo preview.
 - Meeting, messages, notifications, help, settings, and password recovery use local state or feedback rather than integrations.
-- Statistic detail controls have no implemented action.
-- Modals have dialog semantics and close controls, but lack a complete focus trap, Escape handling, and focus restoration.
+- Statistic detail controls display fixture-summary notices.
+- Native modal dialogs provide Escape dismissal, focus containment, and focus restoration for forms and mobile navigation.
 
 These are implementation limitations, not guarantees of future features.
 

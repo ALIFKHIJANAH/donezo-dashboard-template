@@ -46,7 +46,7 @@ There is no configured automated test runner or `npm test` script. There is no `
 | `/` | Dashboard with a marker; login form without one |
 | Any other path | Same marker-dependent fallback as `/`; no not-found screen |
 
-Routes are selected using `window.location.pathname`. Links between authentication screens and login/logout transitions reload the document. Dashboard sidebar entries update local state rather than navigating to separate pages.
+Routes are selected using `window.location.pathname`. Links between authentication screens and login/logout transitions reload the document. Dashboard sidebar entries select and scroll to their corresponding dashboard panels rather than navigating to separate pages.
 
 ## Runtime capabilities
 
@@ -55,15 +55,15 @@ Routes are selected using `window.location.pathname`. Links between authenticati
 | Login/registration | Native form validation, password visibility, notice, demo sign-in | No password verification, account creation, or server request |
 | Logout | Clears user marker and navigates to login | Local browser demo only |
 | Theme | Root `.dark` toggle with persisted choice | No live OS-theme subscription |
-| Search | Case-insensitive project/member filtering and empty results | Fixture data; search control is hidden below the `md` breakpoint |
-| Mobile sidebar | Opens/closes local navigation overlay | Entries do not load feature pages |
+| Search | Case-insensitive project/member filtering, empty results, and Cmd/Ctrl+F focus shortcut | Fixture data; available at every viewport size |
+| Mobile sidebar | Native modal navigation with Escape dismissal and focus management | Entries scroll to dashboard panels, not separate pages |
 | Timer | Local running/paused state | State resets after reload; no saved time entries |
-| Project/member dialogs | Open, validate required fields, close with feedback | No list mutation or persistence; incomplete keyboard focus management |
+| Project/member dialogs | Native modal dialogs, required-field validation, Escape dismissal, focus containment/restoration, demo feedback | No list mutation or persistence |
 | Import | Temporary busy indicator and completion notice | Simulation, no parsing/upload |
 | Meeting | Changes local meeting state | No conferencing integration |
-| Download/messages/notifications/help/settings | Feedback notices | No corresponding integration; copied-link feedback does not write the clipboard |
+| Download/messages/notifications/help/settings | Demo feedback notices and theme guidance | No corresponding integration; download explicitly reports its preview status |
 | Password recovery | Feedback notice | No reset email or recovery flow |
-| Statistics/charts | Display predefined values | Not real analytics; statistic detail controls have no action |
+| Statistics/charts | Predefined values, detail notices, capsule activity bars, semicircular progress gauge | Demo data, not real analytics |
 
 Team avatars use external `pravatar` URLs. Their availability depends on network access and the third-party service; the rest of the demo data is local.
 
@@ -83,13 +83,38 @@ The initial HTML theme script catches storage exceptions. Runtime authentication
 ## Styling operations
 
 - Global styling and the Tailwind 4 import live in `src/index.css`.
+- Dashboard layout and paired light/dark color variables live in `src/dashboard.css`, imported by `App.tsx`. The workspace fills the available width and at least the viewport height, with normal scrolling when content is taller. Desktop uses wider analytics/team panels and a stacked project/timer column; smaller screens reflow the panels and expose modal navigation. The progress label scales with its gauge width, and active navigation icons use the theme's green with filled dashboard tiles and heavier strokes.
 - Dark mode is class-based through `@custom-variant dark`; keep the HTML bootstrap and theme helper aligned.
 - The existing `tailwind.config.js` is not automatically consumed by Tailwind 4. Its overrides require an explicit `@config` reference or a deliberate CSS-first migration.
 - Shared UI is currently `src/components/ui.tsx`. Full shadcn installation requires explicit configuration; adding shadcn packages alone does not migrate the wrappers.
+- Dashboard-specific reusable components are `DashboardSidebar`, `StatCard`, `DashboardButton`, and `DashboardChart` under `src/components/`. They use `src/dashboard.css` and inherit its variables inside `.donezo-workspace`.
 - `cn()` concatenates classes without merging conflicts. Do not assume later class arguments always override existing Tailwind utilities.
 - Inter is a font-stack preference, not a downloaded asset. System fallback fonts are used if Inter is unavailable.
 
 For full shadcn adoption, configure TypeScript/Vite aliases, review `npx shadcn@latest init` output, then add needed components with `npx shadcn@latest add <component>`. These are migration steps, not prerequisites for running the existing project. Review CSS and token changes to preserve both themes.
+
+### Dashboard component customization
+
+- **DashboardSidebar:** supply `groups` with stable group/item IDs, labels, Lucide icons, optional counts/disabled flags, and `onSelect` callbacks. Set `activeId` from parent state. `brand` and `footer` accept React content; `contentOnly` reuses the content inside an existing mobile dialog. Parent code owns routing and dialog behavior.
+- **StatCard:** accepts `title`, any renderable `value` and `caption`, `featured`, optional `trend` and `trendDirection`, and optional `onDetails`/`detailsLabel`. Omit `onDetails` to hide the detail control. Native section attributes and `className` are forwarded.
+- **DashboardButton:** variants are `primary`, `secondary`, `outline`, `ghost`, and `icon`; sizes are `default` and `small`. Native hover/focus/pressed/disabled styles are automatic. Set `state` to `default`, `loading`, `success`, or `error`; use `stateLabels` to customize displayed text. Loading disables activation and sets `aria-busy`; success/error remain actionable for end/retry flows. Supply `icon` for a leading icon and an accessible `aria-label` for icon-only buttons. Native button attributes are forwarded, and the default type is `button` (use `type="submit"` for forms). The caller owns state transitions.
+- **DashboardChart:** the `type` discriminator selects `bar` or `gauge`. `data` entries contain stable `id`, `label`, numeric `value`, optional CSS `color`, `pattern` (`solid` or `striped`), and optional bar `tooltip` content. `ariaLabel` is required; data values are included in the accessible description. `legend` supplies custom entries with IDs/labels/colors/patterns; `legend={[]}` hides it. Gauges default to a legend from their data; bars default to none. `showLabels` hides axis/center labels, while `formatValue` formats accessible values and the gauge center. `max` defaults to the largest bar value or 100 for a gauge. Bar `height` overrides responsive CSS. Gauges also accept a center `value`, `label`, and `strokeWidth`; data values are sequential segment amounts, clipped to `max`. Negative/nonfinite values are treated as zero for geometry. `className`/`style` customize the wrapper and inherited theme variables. Empty data and `state="loading"`/`state="error"` render accessible messages customizable with `emptyLabel`, `loadingLabel`, and `errorLabel`.
+
+```tsx
+<DashboardButton variant="outline" state={saving ? 'loading' : 'default'}
+  stateLabels={{ loading: 'Saving...' }} onClick={save}>Save</DashboardButton>
+
+<DashboardChart type="bar" ariaLabel="Project counts" max={20} height={200}
+  formatValue={value => `${value} projects`}
+  data={[{ id: 'week-1', label: 'Week 1', value: 12, color: 'var(--chart-green)', tooltip: '12 projects' }]}
+  legend={[{ id: 'projects', label: 'Projects', color: 'var(--chart-green)' }]} />
+
+<DashboardChart type="gauge" ariaLabel="Completion" value={60} label="Completed"
+  data={[
+    { id: 'done', label: 'Done', value: 60, color: 'var(--gauge-completed)' },
+    { id: 'pending', label: 'Pending', value: 40, pattern: 'striped' },
+  ]} />
+```
 
 ## Environment configuration
 
@@ -137,7 +162,7 @@ For application changes, record actual results:
 - [ ] Both themes and narrow/desktop layouts are checked, including keyboard navigation and console errors.
 - [ ] Newly implemented async features have loading, empty, error, and retry behavior where relevant.
 
-Existing demo limitations, including dialog focus behavior and no-op controls, must not be reported as passed production functionality. This checklist is for future verification, not a claim that browser checks have already been performed.
+Existing demo limitations, including simulated submissions and imports, must not be reported as completed integrations. This checklist is for future verification, not a claim that browser checks have already been performed.
 
 ## Troubleshooting
 
